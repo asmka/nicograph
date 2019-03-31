@@ -1,4 +1,4 @@
-function createCmtReq(thread_id, user_id, user_key, time_range) {
+function createCmtReq(threadId, userId, userKey, timeRange) {
     var req =
         [{
             "ping": {
@@ -46,47 +46,33 @@ function createCmtReq(thread_id, user_id, user_key, time_range) {
                 "content": "rf:0"
             }
         }];
-    req[2]['thread']['thread'] = String(thread_id);
-    req[2]['thread']['user_id'] = String(user_id);
-    req[2]['thread']['userkey'] = String(user_key);
-    req[5]['thread_leaves']['thread'] = String(thread_id);
-    req[5]['thread_leaves']['user_id'] = String(user_id);
-    req[5]['thread_leaves']['content'] = String(time_range);
-    req[5]['thread_leaves']['userkey'] = String(user_key);
+    req[2]['thread']['thread'] = String(threadId);
+    req[2]['thread']['user_id'] = String(userId);
+    req[2]['thread']['userkey'] = String(userKey);
+    req[5]['thread_leaves']['thread'] = String(threadId);
+    req[5]['thread_leaves']['user_id'] = String(userId);
+    req[5]['thread_leaves']['content'] = String(timeRange);
+    req[5]['thread_leaves']['userkey'] = String(userKey);
 
     return req;
 }
 
 
-function getCmtAndProcess(thread_id, user_id, user_key, time_range, 
-        func_process) {
-    let req = createCmtReq(thread_id, user_id, user_key, time_range);
-    let url = 'https://nmsg.nicovideo.jp/api.json/';
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", url);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function() {
-        switch ( xhr.readyState ) {
-            case 0: // non inited
-                break;
-            case 1: // sending
-                break;
-            case 2: // waiting response
-                break;
-            case 3: // receiving
-                break;
-            case 4: // received
-                if( xhr.status == 200 || xhr.status == 304 ) {
-                    func_process(xhr.responseText)
-                } else {
-                    console.error('[ERROR] GET request is failed.');
-                    console.error('        url: ' + url);
-                    console.error('        status: ' + xhr.statusText );
-                }
-                break;
-        }
-    };
-    xhr.send(JSON.stringify(req));
+function getCmtAndProcess(threadId, userId, userKey, timeRange, callback) {
+    const req = createCmtReq(threadId, userId, userKey, timeRange);
+    const url = 'https://nmsg.nicovideo.jp/api.json/';
+    
+    const headers = {'Content-Type': 'application/json'};
+    const body = JSON.stringify(req);
+    fetch(url, {method: "POST", headers: headers, body: body}).then((response) => {
+        return response.json();
+    }).then((json) => {
+        callback(json);
+    }).catch((err) => {
+        console.error(`[ERROR] Failed to POST request to ${url}`);
+        console.error('url: ' + url);
+        console.error('err: ', err);
+    });
 
     return;
 }
