@@ -99,15 +99,11 @@ function createCmtGraph(jsonRes) {
 
 // main
 window.onload = () => {
-    // create test comments data
-    let cmtCnts = [];
-    for(let i=0; i<200; i++) {
-        cmtCnts.push(Math.random()%100);
-    }
-
     // get data from html document
     let dstr = document.getElementById('js-initial-watch-data').getAttribute('data-api-data');
     let dobj = JSON.parse(dstr);
+    console.debug(dstr);
+    console.debug(dobj);
 
     // extract information to access the comment server
     let threadId = dobj['commentComposite']['threads'][0]['id'];
