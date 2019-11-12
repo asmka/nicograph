@@ -13,7 +13,7 @@ function createCmtReq(threadId, userId, userKey, timeRange) {
                 "thread": "1463483922",
                 "version": "20090904",
                 "language": 0,
-                "user_id": 53842185,
+                "user_id": "53842185",
                 "with_global": 1,
                 "scores": 1,
                 "nicoru": 0,
@@ -31,8 +31,8 @@ function createCmtReq(threadId, userId, userKey, timeRange) {
             "thread_leaves": {
                 "thread": "1463483922",
                 "language": 0,
-                "user_id": 53842185,
-                "content": "0-22:100,1000", // the ceiling movie time of seconds
+                "user_id": "53842185",
+                "content": "0-22:100,1000", // The ceiling movie time of seconds
                 "scores": 1,
                 "nicoru": 0,
                 "userkey": "1502173042.~1~MzCxfaTZL7rDZztXT4fhmR3fXdyv-_24iGol36KOkRA"
@@ -64,6 +64,7 @@ function getCmtAndProcess(threadId, userId, userKey, timeRange, callback) {
     
     const headers = {'Content-Type': 'application/json'};
     const body = JSON.stringify(req);
+
     fetch(url, {method: "POST", headers: headers, body: body}).then((response) => {
         return response.json();
     }).then((json) => {
