@@ -1,5 +1,6 @@
 function getAdsAndProcess(videoId, callback) {
     let url = `https://api.nicoad.nicovideo.jp/v1/contents/video/${videoId}`;
+    //let url = `https://flapi.nicovideo.jp/api/getthreadkey?thread=1397552685`;
 
     fetch(url).then((response) => {
         return response.json();
