@@ -31,6 +31,11 @@
         "http://www.nicovideo.jp/watch/so*",
         "https://www.nicovideo.jp/watch/so*"
     ],
-    "js": ["js/acscmtsvr.js", "js/acsadssvr.js", "js/main.js"]
+    "js": [
+        "js/reqAdJson.js",
+        "js/reqCmtJson.js",
+        "js/reqVideoDoc.js",
+        "js/main.js"
+    ]
   }]
 }
