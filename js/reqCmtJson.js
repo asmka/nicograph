@@ -1,6 +1,6 @@
 function createCmtReqUser(threadId, userId, userKey, timeRange) {
-    var req =
-        [{
+    var req = [
+        {
             "ping": {
                 "content": "rs:0"
             }
@@ -45,10 +45,13 @@ function createCmtReqUser(threadId, userId, userKey, timeRange) {
             "ping": {
                 "content": "rf:0"
             }
-        }];
+        }
+    ];
+
     req[2]['thread']['thread'] = String(threadId);
     req[2]['thread']['user_id'] = String(userId);
     req[2]['thread']['userkey'] = String(userKey);
+
     req[5]['thread_leaves']['thread'] = String(threadId);
     req[5]['thread_leaves']['user_id'] = String(userId);
     req[5]['thread_leaves']['content'] = String(timeRange);
@@ -59,8 +62,8 @@ function createCmtReqUser(threadId, userId, userKey, timeRange) {
 
 
 function createCmtReqChannel(threadId, threadKey, userId, userKey, force184, timeRange) {
-    var req =
-        [{
+    var req = [
+        {
             "ping": {
                 "content": "rs:0"
             }
@@ -145,18 +148,22 @@ function createCmtReqChannel(threadId, threadKey, userId, userKey, force184, tim
                 "content": "rf:0"
             }
         }
-        ];
+    ];
+
     req[2]['thread']['thread'] = String(threadId);
     req[2]['thread']['user_id'] = String(userId);
     req[2]['thread']['userkey'] = String(userKey);
+
     req[5]['thread_leaves']['thread'] = String(threadId);
     req[5]['thread_leaves']['user_id'] = String(userId);
     req[5]['thread_leaves']['content'] = String(timeRange);
     req[5]['thread_leaves']['userkey'] = String(userKey);
+
     req[8]['thread']['thread'] = String(threadId);
     req[8]['thread']['user_id'] = String(userId);
     req[8]['thread']['force_184'] = String(force184);
     req[8]['thread']['threadkey'] = String(threadKey);
+
     req[11]['thread_leaves']['thread'] = String(threadId);
     req[11]['thread_leaves']['user_id'] = String(userId);
     req[11]['thread_leaves']['content'] = String(timeRange);
@@ -167,22 +174,23 @@ function createCmtReqChannel(threadId, threadKey, userId, userKey, force184, tim
 }
 
 
-function getCmtAndProcess(threadId, userId, userKey, timeRange, callback) {
-    const req = createCmtReqUser(threadId, userId, userKey, timeRange);
-    const url = 'https://nmsg.nicovideo.jp/api.json/';
-    
-    const headers = {'Content-Type': 'application/json'};
-    const body = JSON.stringify(req);
+export default async function reqCmtJson(threadId, userId, userKey, timeRange) {
+    return new Promise((resolve, reject) => {
+        const req = createCmtReqUser(threadId, userId, userKey, timeRange);
+        const url = 'https://nmsg.nicovideo.jp/api.json/';
 
-    fetch(url, {method: "POST", headers: headers, body: body}).then((response) => {
-        return response.json();
-    }).then((json) => {
-        callback(json);
-    }).catch((err) => {
-        console.error(`[ERROR] Failed to POST request to ${url}`);
-        console.error('url: ' + url);
-        console.error('err: ', err);
+        const headers = {'Content-Type': 'application/json'};
+        const body = JSON.stringify(req);
+
+        fetch(url, {method: "POST", headers: headers, body: body}).then((response) => {
+            return response.json();
+        }).then((json) => {
+            resolve(json);
+        }).catch((err) => {
+            reject(err);
+            //console.error(`[ERROR] Failed to POST request to ${url}`);
+            //console.error('url: ' + url);
+            //console.error('err: ', err);
+        });
     });
-
-    return;
 }
