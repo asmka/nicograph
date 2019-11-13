@@ -1,4 +1,4 @@
-export default async function reqVideoDoc(videoId) {
+async function reqVideoDoc(videoId) {
     return new Promise((resolve, reject) => {
         const url = `https://www.nicovideo.jp/watch/${videoId}`;
 

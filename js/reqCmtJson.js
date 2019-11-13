@@ -174,7 +174,7 @@ function createCmtReqChannel(threadId, threadKey, userId, userKey, force184, tim
 }
 
 
-export default async function reqCmtJson(threadId, userId, userKey, timeRange) {
+async function reqCmtJson(threadId, userId, userKey, timeRange) {
     return new Promise((resolve, reject) => {
         const req = createCmtReqUser(threadId, userId, userKey, timeRange);
         const url = 'https://nmsg.nicovideo.jp/api.json/';

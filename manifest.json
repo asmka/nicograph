@@ -32,13 +32,10 @@
         "https://www.nicovideo.jp/watch/so*"
     ],
     "js": [
-        "js/content.js"
-    ],
-    "web_accessible_resources": [
-        "js/main.js",
         "js/reqAdJson.js",
         "js/reqCmtJson.js",
-        "js/reqVideoDoc.js"
+        "js/reqVideoDoc.js",
+        "js/main.js"
     ]
   }]
 }
