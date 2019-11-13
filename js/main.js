@@ -51,7 +51,7 @@ function drawGraph(sld, cmtCnts) {
 
 
 function createCmtGraph(jsonRes) {
-    let videoId = location.href.match(/sm\d+/)[0];
+    let videoId = location.href.match(/s[mo]\d+/)[0];
 
     getAdsAndProcess(videoId, (jsonAds) => {
         let vpos = [];
@@ -60,6 +60,7 @@ function createCmtGraph(jsonRes) {
                 vpos.push(obj['chat']['vpos']);
             }
         }
+
         const divNum = 100;
         let cmtCnts = new Array(divNum);
         cmtCnts.fill(0);
@@ -119,7 +120,7 @@ function getInfAndCreateGraph(doc) {
     // Loop in case PlayerPlayTime-duration value is not updated yet
     let timer = setInterval(() => {
         let movieDuration = document.getElementsByClassName('PlayTimeFormatter PlayerPlayTime-duration')[0].innerHTML;
-        if (movieDuration !== '00:00') {
+        if (movieDuration && movieDuration !== '00:00') {
             let durs = movieDuration.split(':');
             let timeRange = '0-' + parseInt(durs[0]) + ':100,1000';
 
@@ -136,14 +137,14 @@ function getInfAndCreateGraph(doc) {
 window.onload = () => {
     getInfAndCreateGraph(document);
 
-    let videoId = location.href.match(/sm\d+/)[0];
+    let videoId = location.href.match(/s[mo]\d+/)[0];
 
     // On click another video link: 
     // In this case, html document is not updated to new video page completely.
     // So, we parse new video page html document by re-accessing it and extract 
     // needed information (e.g. thread id).
     const observer = new MutationObserver((mutations) => {
-        let newVideoId = location.href.match(/sm\d+/)[0];
+        let newVideoId = location.href.match(/s[mo]\d+/)[0];
         if (newVideoId !== videoId) {
             // Get thread id and re-draw comment graph
             const url = `https://www.nicovideo.jp/watch/${newVideoId}`;

@@ -3,7 +3,8 @@
   "version": "0.1",
   "description": "graphing the number of comments over seek bar",
   "permissions": [
-    "https://api.nicoad.nicovideo.jp/"
+    "https://api.nicoad.nicovideo.jp/",
+    "https://flapi.nicovideo.jp/"
   ],
   "background": {
   },
@@ -24,7 +25,12 @@
   },
   "manifest_version": 2,
   "content_scripts": [{
-    "matches": ["http://www.nicovideo.jp/watch/sm*", "https://www.nicovideo.jp/watch/sm*"],
+    "matches": [
+        "http://www.nicovideo.jp/watch/sm*",
+        "https://www.nicovideo.jp/watch/sm*",
+        "http://www.nicovideo.jp/watch/so*",
+        "https://www.nicovideo.jp/watch/so*"
+    ],
     "js": ["js/acscmtsvr.js", "js/acsadssvr.js", "js/main.js"]
   }]
 }
