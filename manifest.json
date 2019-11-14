@@ -26,10 +26,8 @@
     "manifest_version": 2,
     "content_scripts": [{
         "matches": [
-            "http://www.nicovideo.jp/watch/sm*",
-            "https://www.nicovideo.jp/watch/sm*",
-            "http://www.nicovideo.jp/watch/so*",
-            "https://www.nicovideo.jp/watch/so*"
+            "http://www.nicovideo.jp/watch/*",
+            "https://www.nicovideo.jp/watch/*"
         ],
         "js": [
             "bundle.js"

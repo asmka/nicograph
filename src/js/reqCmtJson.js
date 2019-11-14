@@ -61,7 +61,7 @@ function createCmtReqUser(threadId, userId, userKey, timeRange) {
 }
 
 
-function createCmtReqChannel(threadId, threadKey, userId, userKey, force184, timeRange) {
+function createCmtReqChannel(threadId1, threadId2, threadKey, force184, userId, userKey, timeRange) {
     var req = [
         {
             "ping": {
@@ -150,21 +150,21 @@ function createCmtReqChannel(threadId, threadKey, userId, userKey, force184, tim
         }
     ];
 
-    req[2]['thread']['thread'] = String(threadId);
+    req[2]['thread']['thread'] = String(threadId1);
     req[2]['thread']['user_id'] = String(userId);
     req[2]['thread']['userkey'] = String(userKey);
 
-    req[5]['thread_leaves']['thread'] = String(threadId);
+    req[5]['thread_leaves']['thread'] = String(threadId1);
     req[5]['thread_leaves']['user_id'] = String(userId);
     req[5]['thread_leaves']['content'] = String(timeRange);
     req[5]['thread_leaves']['userkey'] = String(userKey);
 
-    req[8]['thread']['thread'] = String(threadId);
+    req[8]['thread']['thread'] = String(threadId2);
     req[8]['thread']['user_id'] = String(userId);
     req[8]['thread']['force_184'] = String(force184);
     req[8]['thread']['threadkey'] = String(threadKey);
 
-    req[11]['thread_leaves']['thread'] = String(threadId);
+    req[11]['thread_leaves']['thread'] = String(threadId2);
     req[11]['thread_leaves']['user_id'] = String(userId);
     req[11]['thread_leaves']['content'] = String(timeRange);
     req[11]['thread_leaves']['force_184'] = String(force184);
@@ -174,11 +174,27 @@ function createCmtReqChannel(threadId, threadKey, userId, userKey, force184, tim
 }
 
 
-export default async function reqCmtJson(threadId, userId, userKey, timeRange) {
+async function reqThreadKey(threadId) {
     return new Promise((resolve, reject) => {
-        const req = createCmtReqUser(threadId, userId, userKey, timeRange);
-        const url = 'https://nmsg.nicovideo.jp/api.json/';
+        const url = `https://flapi.nicovideo.jp/api/getthreadkey?thread=${threadId}`;
 
+        fetch(url).then((response) => {
+            return response.text();
+        }).then((text) => {
+            resolve(text);
+        }).catch((err) => {
+            reject(err);
+            //console.error(`[ERROR] Failed to GET request to ${url}`);
+            //console.error('url: ' + url);
+            //console.error('err: ', err);
+        });
+    });
+}
+
+
+async function reqCmtSvr(req) {
+    return new Promise((resolve, reject) => {
+        const url = 'https://nmsg.nicovideo.jp/api.json/';
         const headers = {'Content-Type': 'application/json'};
         const body = JSON.stringify(req);
 
@@ -193,4 +209,33 @@ export default async function reqCmtJson(threadId, userId, userKey, timeRange) {
             //console.error('err: ', err);
         });
     });
+}
+
+
+export default async function reqCmtJson(dataObj, timeRange) {
+    // Extract information to access the comment server
+    const userId = dataObj['viewer']['id'];
+    const userKey = dataObj['context']['userkey'];
+    const threads = dataObj['commentComposite']['threads'];
+
+    // Generate request JSON to comment server
+    let req = null;
+    if (threads.length >= 3) {
+        // Channel video (workaround)
+        const threadId1 = threads[1]['id'];
+        const threadId2 = threads[2]['id'];
+        const keyText = await reqThreadKey(threadId2);
+        const keys = keyText.split('&force_184=');
+        const threadKey = keys[0].split('threadkey=')[1];
+        const force184 = keys[1];
+        req = createCmtReqChannel(threadId1, threadId2, threadKey, force184, userId, userKey, timeRange);
+    } else {
+        // User video (workaround)
+        const threadId = threads[0]['id'];
+        req = createCmtReqUser(threadId, userId, userKey, timeRange);
+    }
+
+    let cmtJson = await reqCmtSvr(req);
+
+    return cmtJson;
 }
