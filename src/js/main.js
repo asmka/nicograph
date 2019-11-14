@@ -112,6 +112,19 @@ function addRedrawJobOnResize(drawTgt, cmtCnts) {
 }
 
 
+function addRedrawJobOnFullScreen(drawTgt, cmtCnts) {
+    document.onfullscreenchange = ((event) => {
+        let curWidth = drawTgt.getBoundingClientRect().width;
+        // Re-draw
+        let cmtElems = document.getElementsByClassName('CmtRect');
+        let baseWidth = curWidth / cmtCnts.length;
+        for (let e of cmtElems) {
+            e.style.width = baseWidth + 'px';
+        }
+    });
+}
+
+
 function keepCmtGraph(cmtJson) {
     // Draw graph over seekbar
     let drawTgt = document.getElementsByClassName('XSlider')[0];
@@ -119,6 +132,7 @@ function keepCmtGraph(cmtJson) {
 
     drawGraph(drawTgt, cmtCnts);
     addRedrawJobOnResize(drawTgt, cmtCnts);
+    addRedrawJobOnFullScreen(drawTgt, cmtCnts);
 }
 
 
