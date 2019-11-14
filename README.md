@@ -1,4 +1,4 @@
-# Niconico Comment Grapher for Chrome Addon
+# Niconico Comment Grapher Chrome Extension
 
 
 ## バージョン
