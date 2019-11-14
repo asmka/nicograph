@@ -122,16 +122,10 @@ function keepCmtGraph(cmtJson) {
 }
 
 
-
 function createCmtGraph(doc) {
-    // Get data from html document
+    // Get video data from html document
     let dataStr = doc.getElementById('js-initial-watch-data').getAttribute('data-api-data');
     let dataObj = JSON.parse(dataStr);
-
-    // Extract information to access the comment server
-    let threadId = dataObj['commentComposite']['threads'][0]['id'];
-    let userId = dataObj['viewer']['id'];
-    let userKey = dataObj['context']['userkey'];
 
     // Loop in case PlayerPlayTime-duration value is not updated yet
     let timer = setInterval(() => {
@@ -146,7 +140,7 @@ function createCmtGraph(doc) {
             // Access the comment server and draw the comment graph
             (async () => {
                 try {
-                    let cmtJson = await reqCmtJson(threadId, userId, userKey, timeRange);
+                    let cmtJson = await reqCmtJson(dataObj, timeRange);
                     keepCmtGraph(cmtJson);
                 } catch (err) {
                     console.log(err);
