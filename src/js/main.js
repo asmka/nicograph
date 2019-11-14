@@ -154,24 +154,22 @@ function createCmtGraph(doc) {
 
 
 function addRedrawJobOnClickLink() {
-    let videoId = location.href.match(/s[mo]\d+/)[0];   // e.g. 'sm12345'
+    let videoId = location.href.match(/s?[mo]?\d+/)[0];   // e.g. 'sm12345'
 
     // On click another video link: 
     // In this case, html document is not updated to new video page completely.
     // So, we parse new video page html document by re-accessing it and extract 
     // needed information (e.g. thread id).
-    const observer = new MutationObserver((mutations) => {
-        let newVideoId = location.href.match(/s[mo]\d+/)[0];
+    const observer = new MutationObserver(async (mutations) => {
+        let newVideoId = location.href.match(/s?[mo]?\d+/)[0];
         if (newVideoId !== videoId) {
             // Re-draw comment graph with by new video
-            (async () => {
-                try {
-                    let doc = await reqVideoDoc(newVideoId);
-                    createCmtGraph(doc);
-                } catch (err) {
-                    console.log(err);
-                }
-            })();
+            try {
+                let doc = await reqVideoDoc(newVideoId);
+                createCmtGraph(doc);
+            } catch (err) {
+                console.log(err);
+            }
             videoId = newVideoId;
         }
     });
