@@ -224,7 +224,7 @@ export default async function reqCmtJson(dataObj, timeRange) {
         // Channel video (workaround)
         const threadId1 = threads[1]['id'];
         const threadId2 = threads[2]['id'];
-        const keyText = await reqThreadKey(threadId2).split('&');
+        const keyText = await reqThreadKey(threadId2);
         const keys = keyText.split('&');
         const threadKey = keys[0];
         const force184 = keys[1];
