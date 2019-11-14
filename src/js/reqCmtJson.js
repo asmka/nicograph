@@ -179,7 +179,7 @@ async function reqThreadKey(threadId) {
         const url = `https://flapi.nicovideo.jp/api/getthreadkey?thread=${threadId}`;
 
         fetch(url).then((response) => {
-            return response;
+            return response.text();
         }).then((text) => {
             resolve(text);
         }).catch((err) => {
