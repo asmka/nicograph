@@ -176,7 +176,7 @@ function createCmtReqChannel(threadId1, threadId2, threadKey, force184, userId, 
 
 async function reqThreadKey(threadId) {
     return new Promise((resolve, reject) => {
-        const url = `http://flapi.nicovideo.jp/api/getthreadkey?thread=${threadId}`;
+        const url = `https://flapi.nicovideo.jp/api/getthreadkey?thread=${threadId}`;
 
         fetch(url).then((response) => {
             return response;
