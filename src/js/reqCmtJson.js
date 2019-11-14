@@ -226,7 +226,7 @@ export default async function reqCmtJson(dataObj, timeRange) {
         const threadId2 = threads[2]['id'];
         const keyText = await reqThreadKey(threadId2);
         const keys = keyText.split('&force_184=');
-        const threadKey = keys[0];
+        const threadKey = keys[0].split('threadkey=')[1];
         const force184 = keys[1];
         req = createCmtReqChannel(threadId1, threadId2, threadKey, force184, userId, userKey, timeRange);
     } else {
