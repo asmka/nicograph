@@ -199,7 +199,7 @@ async function reqCmtSvr(req) {
         const body = JSON.stringify(req);
 
         fetch(url, {method: "POST", headers: headers, body: body}).then((response) => {
-            return response;
+            return response.json();
         }).then((json) => {
             resolve(json);
         }).catch((err) => {
