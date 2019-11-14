@@ -1,4 +1,4 @@
-async function reqAdJson(videoId) {
+export default async function reqAdJson(videoId) {
     return new Promise((resolve, reject) => {
         let url = `https://api.nicoad.nicovideo.jp/v1/contents/video/${videoId}`;
 

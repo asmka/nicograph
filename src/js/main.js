@@ -1,6 +1,6 @@
-//import reqAdJson from 'reqAdJson';
-//import reqCmtJson from 'reqCmtJson';
-//import reqVideoDoc from 'reqVideoDoc';
+//import reqAdJson from './reqAdJson';
+import reqCmtJson from './reqCmtJson';
+import reqVideoDoc from './reqVideoDoc';
 
 
 function drawGraph(drawTgt, cmtCnts) {
