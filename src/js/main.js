@@ -93,22 +93,17 @@ function aggrCmtCnts(jsonRes, divNum = 100) {
 }
 
 
-function addRedrawJobOnResize(drawTgt, cmtCnts) {
-    // In case of resizing seekbar
-    let prevWidth = drawTgt.getBoundingClientRect().width;
-    window.addEventListener('resize', () => {
+function addRedrawJobOnResize(drawTgt) {
+    const observer = new ResizeObserver((entries) => {
         let curWidth = drawTgt.getBoundingClientRect().width;
-        // If seekbar is resized
-        if (curWidth != prevWidth) {
-            // Re-draw
-            let cmtElems = document.getElementsByClassName('CmtRect');
-            let baseWidth = curWidth / cmtCnts.length;
-            for (let e of cmtElems) {
-                e.style.width = baseWidth + 'px';
-            }
-            prevWidth = curWidth;
+        // Re-draw
+        let cmtElems = document.getElementsByClassName('CmtRect');
+        let baseWidth = curWidth / cmtElems.length;
+        for (let e of cmtElems) {
+            e.style.width = baseWidth + 'px';
         }
     });
+    observer.observe(drawTgt);
 }
 
 
@@ -118,7 +113,7 @@ function keepCmtGraph(cmtJson) {
     let cmtCnts = aggrCmtCnts(cmtJson);
 
     drawGraph(drawTgt, cmtCnts);
-    addRedrawJobOnResize(drawTgt, cmtCnts);
+    addRedrawJobOnResize(drawTgt);
 }
 
 
