@@ -31,6 +31,7 @@ function drawGraph(drawTgt, cmtCnts) {
 
     // Create comment rectangles
     let baseWidth = drawTgtRect.width / cmtCnts.length;
+    let baseHeight = drawTgtRect.height - 4     // Stick out over video if not minus 4
     let frag = document.createDocumentFragment();
     for(let i=0; i<cmtCnts.length; i++) {
         // Create a rectangle element
@@ -42,10 +43,10 @@ function drawGraph(drawTgt, cmtCnts) {
 
         // Calc rectangle
         let eWidth = baseWidth;
-        let eHeight = drawTgtRect.height * (cmtCnts[i] / maxCnt);
+        let eHeight = baseHeight * (cmtCnts[i] / maxCnt);
         e.style.width = eWidth + 'px';
         e.style.height = eHeight + 'px';
-        e.style.top = drawTgtRect.height - eHeight + 'px';
+        e.style.top = baseHeight - eHeight + 4 + 'px';
 
         // Add element 
         frag.appendChild(e);
@@ -102,6 +103,7 @@ function addRedrawJobOnResize(drawTgt) {
         for (let e of cmtElems) {
             e.style.width = baseWidth + 'px';
         }
+        entries;    // For ESLint no-unused-vars
     });
     observer.observe(drawTgt);
 }
@@ -166,6 +168,7 @@ function addRedrawJobOnClickLink() {
                 console.log(err);
             }
             videoId = newVideoId;
+            mutations;  // For ESLint no-unused-vars
         }
     });
 
