@@ -1,6 +1,5 @@
 const fs = require('fs');
 const gulp = require('gulp');
-//const uglify = require('gulp-uglify');
 //const rename = require('gulp-rename');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
@@ -55,13 +54,11 @@ function makeObjectDirs(cb) {
 
 function buildProdJs() {
     return webpackStream(webpackProdConfig, webpack)
-        //.pipe(uglify())
         .pipe(gulp.dest('release/js'));
 }
 
 function buildDevJs() {
     return webpackStream(webpackDevConfig, webpack)
-        //.pipe(uglify())
         .pipe(gulp.dest('release/js'));
 }
 
