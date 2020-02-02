@@ -1,19 +1,30 @@
 const fs = require('fs');
+const cproc = require('child_process');
+
 const gulp = require('gulp');
-//const rename = require('gulp-rename');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 
 const webpackDevConfig = require('./webpack.dev.js');
 const webpackProdConfig = require('./webpack.prod.js');
 
+const manifestFile = 'manifest.json';
+const releaseDir = 'release';
+const zipFile = 'release.zip';
+
 const objectDirs = [
-    'release'
+    releaseDir
+];
+
+const objectFiles = [
+    zipFile
 ];
 
 
 function clean(cb) {
     let promises = [];
+
+    // Remove directories
     objectDirs.forEach((dir) => {
         promises.push(new Promise((resolve, reject) => {
             fs.rmdir(dir, {recursive: true}, (err) => {
@@ -24,6 +35,19 @@ function clean(cb) {
             });
         }));
     });
+
+    // Remove files
+    objectFiles.forEach((file) => {
+        promises.push(new Promise((resolve, reject) => {
+            fs.unlink(file, (err) => {
+                if (err && err.code !== 'ENOENT') {
+                    reject(err);
+                }
+                resolve();
+            });
+        }));
+    });
+
     Promise.all(promises)
         .then((results) => {
             cb();
@@ -32,8 +56,11 @@ function clean(cb) {
         });
 }
 
+
 function makeObjectDirs(cb) {
     let promises = [];
+
+    // Create directories
     objectDirs.forEach((dir) => {
         promises.push(new Promise((resolve, reject) => {
             fs.mkdir(dir, (err) => {
@@ -44,6 +71,7 @@ function makeObjectDirs(cb) {
             });
         }));
     });
+
     Promise.all(promises)
         .then((results) => {
             cb();
@@ -52,18 +80,31 @@ function makeObjectDirs(cb) {
         });
 }
 
+
 function buildProdJs() {
     return webpackStream(webpackProdConfig, webpack)
-        .pipe(gulp.dest('release/js'));
+        .pipe(gulp.dest(`${releaseDir}/js`));
 }
+
 
 function buildDevJs() {
     return webpackStream(webpackDevConfig, webpack)
-        .pipe(gulp.dest('release/js'));
+        .pipe(gulp.dest(`${releaseDir}/js`));
 }
 
+
 function copyManifest(cb) {
-    fs.copyFile('manifest.json', 'release/manifest.json', (err) => {
+    fs.copyFile(manifestFile, `${releaseDir}/${manifestFile}`, (err) => {
+        if (err) {
+            cb(err);
+        }
+        cb();
+    });
+}
+
+
+function zipping(cb) {
+    cproc.exec(`zip -r ${zipFile} ${releaseDir}`, (err, stdout, stderr) => {
         if (err) {
             cb(err);
         }
@@ -76,14 +117,16 @@ exports.prod = gulp.series(
     clean,
     makeObjectDirs,
     buildProdJs,
-    copyManifest
+    copyManifest,
+    zipping
 );
 
 exports.dev = gulp.series(
     clean,
     makeObjectDirs,
     buildDevJs,
-    copyManifest
+    copyManifest,
+    zipping
 );
 
 exports.default = this.prod;
