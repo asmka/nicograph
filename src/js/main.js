@@ -2,6 +2,13 @@
 import reqCmtJson from './reqCmtJson';
 import reqVideoDoc from './reqVideoDoc';
 
+function inject(src) {
+    const s = document.createElement('script');
+    s.setAttribute('type', 'text/javascript');
+    s.setAttribute('src', src);
+
+    document.body.appendChild(s);
+}
 
 function drawGraph(drawTgt, cmtCnts) {
     // Draw destination
@@ -184,6 +191,8 @@ function addRedrawJobOnClickLink() {
 
 
 // Main
+inject(chrome.extension.getURL('js/hack_fetch_thread.js'));
+
 window.onload = () => {
     createCmtGraph(document);
     addRedrawJobOnClickLink();

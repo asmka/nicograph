@@ -3,21 +3,29 @@
     "version": "0.1.0",
     "description": "Graphing the number of comments over seek bar",
     "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "*://nicovideo.cdn.nimg.jp/web/scripts/pages/watch/watch_app_*.js",
+        "*://api.search.nicovideo.jp/api/v2/video/contents/search",
+        "tabs",
+        "*://www.nicovideo.jp/watch/*",
         "https://api.nicoad.nicovideo.jp/",
         "https://flapi.nicovideo.jp/"
     ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "content_scripts": [{
         "matches": [
-            "http://www.nicovideo.jp/watch/*",
-            "https://www.nicovideo.jp/watch/*"
+            "*://www.nicovideo.jp/watch/*"
         ],
         "js": [
             "js/main.js"
         ]
     }],
     "background": {
+        "scripts": ["js/background.js"]
     },
     "web_accessible_resources": [
+        "js/hack_fetch_thread.js",
         "js/reqAdJson.js",
         "js/reqCmtJson.js",
         "js/reqVideoDoc.js"
