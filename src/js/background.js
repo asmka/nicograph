@@ -1,36 +1,17 @@
+/*
+Copyright (c) 2017 noradium
+Released under the MIT license
+https://github.com/noradium/dac/blob/master/src/scripts/background.js
+*/
 
-// watch_dll.js を改変したあとに watch_app.js をロードするためもとのリクエストは止める
-import SearchAPI from './modules/search_api';
-
+// Stop request for loading watch_app.js after watch_dll.js is overwritten
 chrome.webRequest.onBeforeRequest.addListener(
-  (details) => {
-    if (/watch_app_.*\.js/.test(details.url)) {
-      return {cancel: details.url.indexOf('by-danime-another-comment') === -1};
-    }
-  },
-  {urls: ['<all_urls>']},
-  ['blocking']
+    (details) => {
+        if (/watch_app_.*\.js/.test(details.url)) {
+            return {cancel: details.url.indexOf('by-nicograph') === -1};
+        }
+    },
+    {urls: ['<all_urls>']},
+    ['blocking']
 );
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  switch (request.command) {
-    case 'search':
-      console.info('search start', request);
-      SearchAPI.fetch(request.word, request.limit)
-        .then(json => {
-          console.info('search success', json);
-          sendResponse({result: json});
-        })
-        .catch(error => {
-          sendResponse({error});
-        });
-      return true;
-  }
-});
-
-// pageAction の表示切り替え
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (tab.url.indexOf("www.nicovideo.jp/watch") !== -1) {
-    chrome.pageAction.show(tabId);
-  }
-});

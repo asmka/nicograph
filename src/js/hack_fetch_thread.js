@@ -1,17 +1,16 @@
 /*
 Copyright (c) 2017 noradium
 Released under the MIT license
-https://github.com/noradium/dac/blob/master/LICENSE.md
+https://github.com/noradium/dac/blob/master/src/scripts/hack_fetch_thread.js
 */
 
+import createCmtGraph from "./lib/create_cmt_graph";
 
-// Main
 try {
     init();
 } catch (error) {
     console.error('[ERROR] Failed to initialize nicograph', error);
 }
-
 
 function init() {
     const libraryFunctions = window['webpackJsonp'][0][1];
@@ -31,12 +30,13 @@ function init() {
         const originalFetchThread = e.exports[fetchThreadBlockPropertyName].prototype.fetchThread;
 
         e.exports[fetchThreadBlockPropertyName].prototype.fetchThread = function () {
-            return originalFetchThread.call(this, arguments)
+            return originalFetchThread.call(this, ...arguments)
                 .then((threads) => {
-                    // Create comment graph
+                    // Add custom processing
+                    createCmtGraph(threads);
                     return threads;
-                }).catch((error) => {
-                    //
+                }).catch((err) => {
+                    console.error("[ERROR] Failed to fetch thread", err);
                 });
         };
     };
