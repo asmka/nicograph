@@ -1,7 +1,7 @@
 {
     "name": "Niconico Comment Grapher",
     "version": "0.2.0",
-    "description": "Graphing interval comments over seek bar",
+    "description": "ニコニコ動画のシークバー上に区間コメント数のグラフを描画します",
     "permissions": [
         "tabs",
         "webRequest",
