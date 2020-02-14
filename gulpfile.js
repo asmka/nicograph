@@ -20,7 +20,6 @@ const objectFiles = [
     zipFile
 ];
 
-
 function clean(cb) {
     let promises = [];
 
@@ -56,7 +55,6 @@ function clean(cb) {
         });
 }
 
-
 function makeObjectDirs(cb) {
     let promises = [];
 
@@ -80,18 +78,15 @@ function makeObjectDirs(cb) {
         });
 }
 
-
 function buildProdJs() {
     return webpackStream(webpackProdConfig, webpack)
         .pipe(gulp.dest(`${releaseDir}/js`));
 }
 
-
 function buildDevJs() {
     return webpackStream(webpackDevConfig, webpack)
         .pipe(gulp.dest(`${releaseDir}/js`));
 }
-
 
 function copyManifest(cb) {
     fs.copyFile(manifestFile, `${releaseDir}/${manifestFile}`, (err) => {
@@ -102,7 +97,6 @@ function copyManifest(cb) {
     });
 }
 
-
 function zipping(cb) {
     cproc.exec(`zip -r ${zipFile} ${releaseDir}`, (err, stdout, stderr) => {
         if (err) {
@@ -112,6 +106,9 @@ function zipping(cb) {
     });
 }
 
+exports.clean= gulp.series(
+    clean
+);
 
 exports.prod = gulp.series(
     clean,

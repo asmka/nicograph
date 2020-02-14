@@ -14,10 +14,5 @@
 ## ビルド手順
 ```
 $ npm install
-$ npx gulp [prod|dev]
+$ npm run build [prod|dev]
 ```
-
-
-## 未対応
-- HTML5以外の動画
-- 生放送

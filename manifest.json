@@ -1,26 +1,28 @@
 {
     "name": "Niconico Comment Grapher",
-    "version": "0.1.0",
-    "description": "Graphing the number of comments over seek bar",
+    "version": "0.2.0",
+    "description": "ニコニコ動画のシークバー上に区間コメント数のグラフを描画します",
     "permissions": [
-        "https://api.nicoad.nicovideo.jp/",
-        "https://flapi.nicovideo.jp/"
+        "tabs",
+        "webRequest",
+        "webRequestBlocking",
+        "*://nicovideo.cdn.nimg.jp/web/scripts/pages/watch/watch_app_*.js",
+        "*://www.nicovideo.jp/watch/*"
     ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "content_scripts": [{
         "matches": [
-            "http://www.nicovideo.jp/watch/*",
-            "https://www.nicovideo.jp/watch/*"
+            "*://www.nicovideo.jp/watch/*"
         ],
         "js": [
-            "js/main.js"
+            "js/index.js"
         ]
     }],
     "background": {
+        "scripts": ["js/background.js"]
     },
     "web_accessible_resources": [
-        "js/reqAdJson.js",
-        "js/reqCmtJson.js",
-        "js/reqVideoDoc.js"
+        "js/hack_fetch_thread.js"
     ],
     "page_action": {
         "default_popup": "",

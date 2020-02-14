@@ -1,9 +1,8 @@
 module.exports = {
     entry: {
-        main: './src/js/main.js',
-        reqAdJson: './src/js/reqAdJson.js',
-        reqCmtJson: './src/js/reqCmtJson.js',
-        reqVideoDoc: './src/js/reqVideoDoc.js'
+        index: './src/js/index.js',
+        hack_fetch_thread: './src/js/hack_fetch_thread.js',
+        background: './src/js/background.js'
     },
     output: {
         filename: '[name].js'
