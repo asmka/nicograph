@@ -6,7 +6,8 @@
         "tabs",
         "webRequest",
         "webRequestBlocking",
-        "*://nicovideo.cdn.nimg.jp/web/scripts/pages/watch/watch_app_*.js"
+        "*://nicovideo.cdn.nimg.jp/web/scripts/pages/watch/watch_app_*.js",
+        "*://www.nicovideo.jp/watch/*"
     ],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "content_scripts": [{
