@@ -25,7 +25,10 @@ function aggrCmtCnts(threads, movieTimeMs, divNum = 100) {
     let vposMs = [];
     threads.forEach((thread) => {
         thread.chats.forEach((chat) => {
-            vposMs.push(chat.vpos * 10);
+            // Omit deleted comment that has no 'content' property
+            if (Object.prototype.hasOwnProperty.call(chat, "content")) {
+                vposMs.push(chat.vpos * 10);
+            }
         });
     });
 
