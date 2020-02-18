@@ -7,8 +7,8 @@
 
 
 ## サンプル
-<img src="./images/sample01.png" width="480px">
-<img src="./images/sample02.png" width="480px">
+<img src="./images/samples/sample01.png" width="480px">
+<img src="./images/samples/sample02.png" width="480px">
 
 
 ## ビルド手順
