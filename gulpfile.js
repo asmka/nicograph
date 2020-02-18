@@ -9,6 +9,7 @@ const webpackDevConfig = require('./webpack.dev.js');
 const webpackProdConfig = require('./webpack.prod.js');
 
 const manifestFile = 'manifest.json';
+const iconsDir = 'images/icons';
 const releaseDir = 'release';
 const zipFile = 'release.zip';
 
@@ -97,6 +98,11 @@ function copyManifest(cb) {
     });
 }
 
+function copyIcons() {
+    return gulp.src(`${iconsDir}/*`)
+        .pipe(gulp.dest(`${releaseDir}/icons`));
+}
+
 function zipping(cb) {
     cproc.exec(`zip -r ${zipFile} ${releaseDir}`, (err, stdout, stderr) => {
         if (err) {
@@ -115,6 +121,7 @@ exports.prod = gulp.series(
     makeObjectDirs,
     buildProdJs,
     copyManifest,
+    copyIcons,
     zipping
 );
 
@@ -123,6 +130,7 @@ exports.dev = gulp.series(
     makeObjectDirs,
     buildDevJs,
     copyManifest,
+    copyIcons,
     zipping
 );
 
