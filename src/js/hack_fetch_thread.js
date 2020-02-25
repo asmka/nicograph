@@ -4,7 +4,7 @@ Released under the MIT license
 https://github.com/noradium/dac/blob/master/src/scripts/hack_fetch_thread.js
 */
 
-import createCmtGraph from "./lib/create_cmt_graph";
+import {createCmtGraph} from "./lib/cmt_graph";
 
 try {
     init();
@@ -21,6 +21,7 @@ function init() {
 
     // Overwrite fetch comment library
     const originalCommentClientFunction = libraryFunctions[commentClientFunctionIndex];
+
     libraryFunctions[commentClientFunctionIndex] = function (e, t, n) {
         originalCommentClientFunction(e, t, n);
 

@@ -1,24 +1,5 @@
-export default function createCmtGraph(threads) {
-    // [ToDo]
-    // Get movie time from default called library
-
-    // Loop in case PlayerPlayTime-duration value is not updated yet
-    let timer = setInterval(() => {
-        // Get movie duration from document
-        let movieDuration = document.getElementsByClassName(
-            'PlayTimeFormatter PlayerPlayTime-duration')[0].innerHTML;
-
-        // PlayerPlayTime-document value is updated
-        if (movieDuration && movieDuration !== '00:00') {
-            let durs = movieDuration.split(':');
-            let movieTimeMs = (parseInt(durs[0]) * 60 + parseInt(durs[1])) * 1000;
-
-            const cmtCnts = aggrCmtCnts(threads, movieTimeMs);
-            keepCmtGraph(cmtCnts);
-
-            clearInterval(timer);
-        }
-    }, 100);
+let shareVars = {
+    isNicoads: null
 }
 
 function aggrCmtCnts(threads, movieTimeMs, divNum = 100) {
@@ -35,21 +16,15 @@ function aggrCmtCnts(threads, movieTimeMs, divNum = 100) {
     let cmtCnts = new Array(divNum);
     cmtCnts.fill(0);
 
-    // [Todo] Adapt to AdBlock
-    /*
-    // Check either display niconico advertisement or not
-    let adsTime = 0;
-    if (videoId) {
-        if (jsonAds.data.activePoint > 0) {
-            adsTime = 10*100;
-        }
+    // Nicoads time at the movie end
+    let nicoadsTimeMs = 0;
+    if (shareVars.isNicoads) {
+        nicoadsTimeMs = 10*1000;
     }
-    */
 
-    let baseTimeMs = movieTimeMs / divNum;
-    //let baseTime = (movieTime + adsTime) / divNum;
+    let intervalTimeMs = (movieTimeMs + nicoadsTimeMs) / divNum;
     vposMs.forEach((timeMs) => {
-        let p = parseInt(timeMs / baseTimeMs);
+        let p = parseInt(timeMs / intervalTimeMs);
         if (p >= divNum) p = divNum - 1;
         cmtCnts[p] += 1;
     });
@@ -57,6 +32,7 @@ function aggrCmtCnts(threads, movieTimeMs, divNum = 100) {
     return cmtCnts;
 }
 
+// If already drawn graph, reconstruct one
 function keepCmtGraph(cmtCnts) {
     // Draw graph over seekbar
     let drawTgt = document.getElementsByClassName('XSlider')[0];
@@ -128,4 +104,31 @@ function addRedrawJobOnResize(drawTgt) {
         entries;    // For ESLint no-unused-vars
     });
     observer.observe(drawTgt);
+}
+
+export function setNicoads(isExist) {
+    shareVars.isNicoads = isExist;
+}
+
+export function createCmtGraph(threads) {
+    // [ToDo]
+    // Get movie time from default called library
+
+    // Loop in case PlayerPlayTime-duration value is not updated yet
+    let timer = setInterval(() => {
+        // Get movie duration from document
+        let movieDuration = document.getElementsByClassName(
+            'PlayTimeFormatter PlayerPlayTime-duration')[0].innerHTML;
+
+        // PlayerPlayTime-document value is updated
+        if (movieDuration && movieDuration !== '00:00') {
+            let durs = movieDuration.split(':');
+            let movieTimeMs = (parseInt(durs[0]) * 60 + parseInt(durs[1])) * 1000;
+
+            let cmtCnts = aggrCmtCnts(threads, movieTimeMs);
+            keepCmtGraph(cmtCnts);
+
+            clearInterval(timer);
+        }
+    }, 100);
 }
