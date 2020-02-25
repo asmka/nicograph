@@ -4,15 +4,16 @@ Released under the MIT license
 https://github.com/noradium/dac/blob/master/src/scripts/hack_fetch_thread.js
 */
 
-import {createCmtGraph} from "./lib/cmt_graph";
+import CmtGraph from "./lib/cmt_graph";
 
 try {
     init();
 } catch (error) {
-    console.error('[ERROR] Failed to initialize nicograph', error);
+    console.error('[ERROR] Failed to hack fetchThread function', error);
 }
 
 function init() {
+    let cmtGraph = new CmtGraph();
     const libraryFunctions = window['webpackJsonp'][0][1];
     const commentClientFunctionIndex = libraryFunctions.findIndex((item) => {
         // Now, fetchThread is the library to fetch comments
@@ -33,8 +34,11 @@ function init() {
         e.exports[fetchThreadBlockPropertyName].prototype.fetchThread = function () {
             return originalFetchThread.call(this, ...arguments)
                 .then((threads) => {
+                    // DEBUG
+                    console.debug('Called hacked fetchThread');
                     // Add custom processing
-                    createCmtGraph(threads);
+                    cmtGraph.createCmtGraph(threads);
+                    // Return original Promise
                     return threads;
                 }).catch((err) => {
                     console.error("[ERROR] Failed to fetch thread", err);

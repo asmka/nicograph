@@ -1,44 +1,37 @@
-let shareVars = {
-    isNicoads: null
-}
-
-function aggrCmtCnts(threads, movieTimeMs, divNum = 100) {
-    let vposMs = [];
+function extractVposMsList(threads) {
+    let vposMsList = [];
     threads.forEach((thread) => {
         thread.chats.forEach((chat) => {
             // Omit deleted comment that has no 'content' property
             if (Object.prototype.hasOwnProperty.call(chat, "content")) {
-                vposMs.push(chat.vpos * 10);
+                vposMsList.push(chat.vpos * 10);
             }
         });
     });
 
+    return vposMsList;
+}
+
+function aggrCmtCnts(vposMsList, movieTimeMs, isNicoads, divNum) {
     let cmtCnts = new Array(divNum);
     cmtCnts.fill(0);
 
     // Nicoads time at the movie end
     let nicoadsTimeMs = 0;
-    if (shareVars.isNicoads) {
+    if (isNicoads) {
         nicoadsTimeMs = 10*1000;
     }
 
     let intervalTimeMs = (movieTimeMs + nicoadsTimeMs) / divNum;
-    vposMs.forEach((timeMs) => {
+    vposMsList.forEach((timeMs) => {
+        // [ToDo]
+        // Test in case zero division
         let p = parseInt(timeMs / intervalTimeMs);
         if (p >= divNum) p = divNum - 1;
         cmtCnts[p] += 1;
     });
 
     return cmtCnts;
-}
-
-// If already drawn graph, reconstruct one
-function keepCmtGraph(cmtCnts) {
-    // Draw graph over seekbar
-    let drawTgt = document.getElementsByClassName('XSlider')[0];
-
-    drawGraph(drawTgt, cmtCnts);
-    addRedrawJobOnResize(drawTgt);
 }
 
 function drawGraph(drawTgt, cmtCnts) {
@@ -106,27 +99,66 @@ function addRedrawJobOnResize(drawTgt) {
     observer.observe(drawTgt);
 }
 
-export function setNicoads(isExist) {
-    shareVars.isNicoads = isExist;
+// If already drawn graph, reconstruct one
+function keepCmtGraph(cmtCnts) {
+    // Draw graph over seekbar
+    let drawTgt = document.getElementsByClassName('XSlider')[0];
+
+    drawGraph(drawTgt, cmtCnts);
+    addRedrawJobOnResize(drawTgt);
 }
 
-export function createCmtGraph(threads) {
+export default function cmtGraph() {
+    this.shareVars = {
+        vposMsList: [],
+        movieTimeMs: 0,
+        isNicoads: false,
+        divNum: 0
+    };
+}
+
+cmtGraph.prototype.overwriteCmtGraph = function({
+    vposMsList  = this.shareVars.vposMsList,
+    movieTimeMs = this.shareVars.movieTimeMs,
+    isNicoads   = this.shareVars.isNicoads,
+    divNum      = this.shareVars.divNum
+}) {
+    console.debug(`Called overwriteCmtGraph`);
+    console.debug(`vposMsList: ${vposMsList}`);
+    console.debug(`movieTimeMs: ${movieTimeMs}`);
+    console.debug(`isNicoads: ${isNicoads}`);
+    console.debug(`divNum: ${divNum}`);
+
+    console.debug(this.shareVars);
+    // Preserve vars for recreating graph
+    this.shareVars.movieTimeMs = movieTimeMs;
+    this.shareVars.vposMsList  = vposMsList;
+    this.shareVars.isNicoads   = isNicoads;
+    this.shareVars.divNum      = divNum;
+    console.debug(this.shareVars);
+
+    const cmtCnts = aggrCmtCnts(vposMsList, movieTimeMs, isNicoads, divNum);
+    keepCmtGraph(cmtCnts);
+}
+
+cmtGraph.prototype.createCmtGraph = function(threads) {
     // [ToDo]
     // Get movie time from default called library
+    console.debug(`Called createCmtGraph`);
 
     // Loop in case PlayerPlayTime-duration value is not updated yet
     let timer = setInterval(() => {
         // Get movie duration from document
-        let movieDuration = document.getElementsByClassName(
+        const movieDuration = document.getElementsByClassName(
             'PlayTimeFormatter PlayerPlayTime-duration')[0].innerHTML;
 
         // PlayerPlayTime-document value is updated
         if (movieDuration && movieDuration !== '00:00') {
-            let durs = movieDuration.split(':');
-            let movieTimeMs = (parseInt(durs[0]) * 60 + parseInt(durs[1])) * 1000;
+            const durs = movieDuration.split(':');
+            const movieTimeMs = (parseInt(durs[0]) * 60 + parseInt(durs[1])) * 1000;
 
-            let cmtCnts = aggrCmtCnts(threads, movieTimeMs);
-            keepCmtGraph(cmtCnts);
+            const vposMsList = extractVposMsList(threads);
+            this.overwriteCmtGraph({vposMsList: vposMsList, movieTimeMs: movieTimeMs, divNum: 100});
 
             clearInterval(timer);
         }
