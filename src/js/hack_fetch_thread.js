@@ -4,7 +4,7 @@ Released under the MIT license
 https://github.com/noradium/dac/blob/master/src/scripts/hack_fetch_thread.js
 */
 
-import CmtGraph from "./lib/cmt_graph";
+import {createCmtGraph} from "./lib/cmt_graph";
 
 try {
     init();
@@ -13,7 +13,6 @@ try {
 }
 
 function init() {
-    let cmtGraph = new CmtGraph();
     const libraryFunctions = window['webpackJsonp'][0][1];
     const commentClientFunctionIndex = libraryFunctions.findIndex((item) => {
         // Now, fetchThread is the library to fetch comments
@@ -37,7 +36,7 @@ function init() {
                     // DEBUG
                     console.debug('Called hacked fetchThread');
                     // Add custom processing
-                    cmtGraph.createCmtGraph(threads);
+                    createCmtGraph(threads);
                     // Return original Promise
                     return threads;
                 }).catch((err) => {

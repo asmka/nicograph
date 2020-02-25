@@ -1,3 +1,5 @@
+import cmtGraphGlobals from './cmt_graph_globals';
+
 function extractVposMsList(threads) {
     let vposMsList = [];
     threads.forEach((thread) => {
@@ -95,6 +97,10 @@ function addRedrawJobOnResize(drawTgt) {
             e.style.width = baseWidth + 'px';
         }
         entries;    // For ESLint no-unused-vars
+
+        console.debug(debugGlobals.a);
+        debugGlobals.a++;
+        console.debug(debugGlobals.a);
     });
     observer.observe(drawTgt);
 }
@@ -108,40 +114,42 @@ function keepCmtGraph(cmtCnts) {
     addRedrawJobOnResize(drawTgt);
 }
 
-export default function cmtGraph() {
-    this.shareVars = {
-        vposMsList: [],
-        movieTimeMs: 0,
-        isNicoads: false,
-        divNum: 0
-    };
-}
+let debugGlobals = {
+    a: 10,
+    b: 15
+};
 
-cmtGraph.prototype.overwriteCmtGraph = function({
-    vposMsList  = this.shareVars.vposMsList,
-    movieTimeMs = this.shareVars.movieTimeMs,
-    isNicoads   = this.shareVars.isNicoads,
-    divNum      = this.shareVars.divNum
+export function overwriteCmtGraph({
+    vposMsList  = cmtGraphGlobals.vposMsList,
+    movieTimeMs = cmtGraphGlobals.movieTimeMs,
+    isNicoads   = cmtGraphGlobals.isNicoads,
+    divNum      = cmtGraphGlobals.divNum
 }) {
-    console.debug(`Called overwriteCmtGraph`);
-    console.debug(`vposMsList: ${vposMsList}`);
+    console.debug(`Called overwrite`);
+    // console.debug(`vposMsList: ${vposMsList}`);
     console.debug(`movieTimeMs: ${movieTimeMs}`);
     console.debug(`isNicoads: ${isNicoads}`);
     console.debug(`divNum: ${divNum}`);
 
-    console.debug(this.shareVars);
+    console.debug('before cmtGraphGlobals:');
+    console.debug(JSON.stringify(cmtGraphGlobals));
     // Preserve vars for recreating graph
-    this.shareVars.movieTimeMs = movieTimeMs;
-    this.shareVars.vposMsList  = vposMsList;
-    this.shareVars.isNicoads   = isNicoads;
-    this.shareVars.divNum      = divNum;
-    console.debug(this.shareVars);
+    cmtGraphGlobals.movieTimeMs = movieTimeMs;
+    cmtGraphGlobals.vposMsList  = vposMsList;
+    cmtGraphGlobals.isNicoads   = isNicoads;
+    cmtGraphGlobals.divNum      = divNum;
+    console.debug('after cmtGraphGlobals:');
+    console.debug(JSON.stringify(cmtGraphGlobals));
 
     const cmtCnts = aggrCmtCnts(vposMsList, movieTimeMs, isNicoads, divNum);
     keepCmtGraph(cmtCnts);
+
+    console.debug(debugGlobals.a);
+    debugGlobals.a++;
+    console.debug(debugGlobals.a);
 }
 
-cmtGraph.prototype.createCmtGraph = function(threads) {
+export function createCmtGraph(threads) {
     // [ToDo]
     // Get movie time from default called library
     console.debug(`Called createCmtGraph`);
@@ -158,9 +166,11 @@ cmtGraph.prototype.createCmtGraph = function(threads) {
             const movieTimeMs = (parseInt(durs[0]) * 60 + parseInt(durs[1])) * 1000;
 
             const vposMsList = extractVposMsList(threads);
-            this.overwriteCmtGraph({vposMsList: vposMsList, movieTimeMs: movieTimeMs, divNum: 100});
+            overwriteCmtGraph({vposMsList: vposMsList, movieTimeMs: movieTimeMs, divNum: 100});
 
             clearInterval(timer);
         }
     }, 100);
+
+    console.debug(debugGlobals.a);
 }

@@ -4,7 +4,7 @@ Released under the MIT license
 https://github.com/noradium/dac/blob/master/src/scripts/hack_fetch_thread.js
 */
 
-import CmtGraph from "./lib/cmt_graph";
+import {overwriteCmtGraph} from "./lib/cmt_graph";
 
 try {
     init();
@@ -13,7 +13,6 @@ try {
 }
 
 function init() {
-    let cmtGraph = new CmtGraph();
     const libraryFunctions = window['webpackJsonp'][0][1];
     const nicoadsModuleIndex = libraryFunctions.findIndex((item) => {
         return item && !!item.toString().match(/\.getNicoads\s?=\s?function/);
@@ -40,7 +39,7 @@ function init() {
                     console.debug(val);
                     // Add custom process
                     if (val) {
-                        cmtGraph.overwriteCmtGraph({isNicoads: true});
+                        overwriteCmtGraph({isNicoads: true});
                     }
                     // Return original Promise
                     return val;

@@ -23,8 +23,7 @@
         "scripts": ["js/background.js"]
     },
     "web_accessible_resources": [
-        "js/hack_fetch_thread.js",
-        "js/hack_get_nicoads.js"
+        "js/hack_lib.js"
     ],
     "page_action": {
         "default_popup": "",
