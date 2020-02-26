@@ -36,13 +36,16 @@ function init() {
                 .then((nicoads) => {
                     // Add custom process
                     if (nicoads) {
-                        overwriteCmtGraph({isNicoads: true});
+                        try {
+                            overwriteCmtGraph({isNicoads: true});
+                        } catch (err) {
+                            console.error("[ERROR] Failed to do custom getNicoads", err);
+                        }
                     }
                     // Return original Promise
                     return nicoads;
-                }).catch((err) => {
-                    console.error("[ERROR] Failed to get nicoads", err);
                 });
+            
         }
     };
 }

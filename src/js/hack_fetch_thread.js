@@ -34,11 +34,13 @@ function init() {
             return originalFetchThread.call(this, ...arguments)
                 .then((threads) => {
                     // Add custom processing
-                    createCmtGraph(threads);
+                    try {
+                        createCmtGraph(threads);
+                    } catch (err) {
+                        console.error("[ERROR] Failed to do custom fetchThread", err);
+                    }
                     // Return original Promise
                     return threads;
-                }).catch((err) => {
-                    console.error("[ERROR] Failed to fetch thread", err);
                 });
         };
     };
