@@ -4,8 +4,6 @@ Released under the MIT license
 https://github.com/noradium/dac/blob/master/src/scripts/index.js
 */
 
-//inject(chrome.extension.getURL('js/hack_fetch_thread.js'));
-//inject(chrome.extension.getURL('js/hack_get_nicoads.js'));
 inject(chrome.extension.getURL('js/hack_lib.js'));
 const watchAppJsURI = getWatchAppJsURI();
 inject(`${watchAppJsURI}${watchAppJsURI.indexOf('?') === -1 ? '?' : '&'}by-nicograph`);

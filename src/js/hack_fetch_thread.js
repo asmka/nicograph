@@ -33,8 +33,6 @@ function init() {
         e.exports[fetchThreadBlockPropertyName].prototype.fetchThread = function () {
             return originalFetchThread.call(this, ...arguments)
                 .then((threads) => {
-                    // DEBUG
-                    console.debug('Called hacked fetchThread');
                     // Add custom processing
                     createCmtGraph(threads);
                     // Return original Promise

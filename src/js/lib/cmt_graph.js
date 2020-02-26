@@ -1,4 +1,10 @@
-import cmtGraphGlobals from './cmt_graph_globals';
+let cmtGraphComp = {
+    vposMsList: [],
+    movieTimeMs: 0,
+    isNicoads: false,
+    divNum: 0,
+    resizeObserver: null
+};
 
 function extractVposMsList(threads) {
     let vposMsList = [];
@@ -87,8 +93,8 @@ function drawGraph(drawTgt, cmtCnts) {
     graphElem.appendChild(frag);
 }
 
-function addRedrawJobOnResize(drawTgt) {
-    const observer = new ResizeObserver((entries) => {
+function createResizeObserverToRedraw(drawTgt) {
+    const observer = new ResizeObserver(() => {
         let curWidth = drawTgt.getBoundingClientRect().width;
         // Re-draw
         let cmtElems = document.getElementsByClassName('CmtRect');
@@ -96,13 +102,10 @@ function addRedrawJobOnResize(drawTgt) {
         for (let e of cmtElems) {
             e.style.width = baseWidth + 'px';
         }
-        entries;    // For ESLint no-unused-vars
-
-        console.debug(debugGlobals.a);
-        debugGlobals.a++;
-        console.debug(debugGlobals.a);
     });
     observer.observe(drawTgt);
+
+    return observer;
 }
 
 // If already drawn graph, reconstruct one
@@ -111,48 +114,31 @@ function keepCmtGraph(cmtCnts) {
     let drawTgt = document.getElementsByClassName('XSlider')[0];
 
     drawGraph(drawTgt, cmtCnts);
-    addRedrawJobOnResize(drawTgt);
+    if (!cmtGraphComp.resizeObserver) {
+        let resizeObserver = createResizeObserverToRedraw(drawTgt);
+        cmtGraphComp.resizeObserver = resizeObserver;
+    }
 }
 
-let debugGlobals = {
-    a: 10,
-    b: 15
-};
-
 export function overwriteCmtGraph({
-    vposMsList  = cmtGraphGlobals.vposMsList,
-    movieTimeMs = cmtGraphGlobals.movieTimeMs,
-    isNicoads   = cmtGraphGlobals.isNicoads,
-    divNum      = cmtGraphGlobals.divNum
+    vposMsList  = cmtGraphComp.vposMsList,
+    movieTimeMs = cmtGraphComp.movieTimeMs,
+    isNicoads   = cmtGraphComp.isNicoads,
+    divNum      = cmtGraphComp.divNum
 }) {
-    console.debug(`Called overwrite`);
-    // console.debug(`vposMsList: ${vposMsList}`);
-    console.debug(`movieTimeMs: ${movieTimeMs}`);
-    console.debug(`isNicoads: ${isNicoads}`);
-    console.debug(`divNum: ${divNum}`);
-
-    console.debug('before cmtGraphGlobals:');
-    console.debug(JSON.stringify(cmtGraphGlobals));
     // Preserve vars for recreating graph
-    cmtGraphGlobals.movieTimeMs = movieTimeMs;
-    cmtGraphGlobals.vposMsList  = vposMsList;
-    cmtGraphGlobals.isNicoads   = isNicoads;
-    cmtGraphGlobals.divNum      = divNum;
-    console.debug('after cmtGraphGlobals:');
-    console.debug(JSON.stringify(cmtGraphGlobals));
+    cmtGraphComp.movieTimeMs = movieTimeMs;
+    cmtGraphComp.vposMsList  = vposMsList;
+    cmtGraphComp.isNicoads   = isNicoads;
+    cmtGraphComp.divNum      = divNum;
 
     const cmtCnts = aggrCmtCnts(vposMsList, movieTimeMs, isNicoads, divNum);
     keepCmtGraph(cmtCnts);
-
-    console.debug(debugGlobals.a);
-    debugGlobals.a++;
-    console.debug(debugGlobals.a);
 }
 
 export function createCmtGraph(threads) {
     // [ToDo]
     // Get movie time from default called library
-    console.debug(`Called createCmtGraph`);
 
     // Loop in case PlayerPlayTime-duration value is not updated yet
     let timer = setInterval(() => {
@@ -171,6 +157,4 @@ export function createCmtGraph(threads) {
             clearInterval(timer);
         }
     }, 100);
-
-    console.debug(debugGlobals.a);
 }

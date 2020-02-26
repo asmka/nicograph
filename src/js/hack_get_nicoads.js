@@ -33,16 +33,13 @@ function init() {
         // Overwrite getNicoads function
         e.exports[getNicoadsBlockPropertyName].Client.prototype.getNicoads = function () {
             return originalGetNicoadsFunction.call(this, ...arguments)
-                .then((val) => {
-                    // DEBUG
-                    console.debug('Called hacked getNicoads');
-                    console.debug(val);
+                .then((nicoads) => {
                     // Add custom process
-                    if (val) {
+                    if (nicoads) {
                         overwriteCmtGraph({isNicoads: true});
                     }
                     // Return original Promise
-                    return val;
+                    return nicoads;
                 }).catch((err) => {
                     console.error("[ERROR] Failed to get nicoads", err);
                 });
