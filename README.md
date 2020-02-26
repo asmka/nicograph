@@ -6,6 +6,10 @@
 コメント数の多い区間から動画の盛り上がりどころを推測可
 
 
+## 公開ページ
+https://chrome.google.com/webstore/detail/niconico-comment-grapher/ejgkppbcijkddbdmfalkholdfalbhecj
+
+
 ## サンプル
 <img src="./images/samples/sample01.png" width="480px">
 <img src="./images/samples/sample02.png" width="480px">
