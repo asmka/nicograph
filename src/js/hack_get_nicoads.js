@@ -13,12 +13,13 @@ try {
 }
 
 function init() {
-  const libraryFunctions = window["webpackJsonp"][0][1];
-  const nicoadsModuleIndex = libraryFunctions.findIndex((item) => {
-    return item && !!item.toString().match(/\.getNicoads\s?=\s?function/);
+  const libraryFunctions = window["webpackChunkwatch"][0][1];
+  const nicoadsModuleIndex = Object.keys(libraryFunctions).find((index) => {
+    const func = libraryFunctions[index];
+    return func && !!func.toString().match(/\.getSponsors\s?=\s?function/);
   });
 
-  // Overwrite the library that includes getNicoads function
+  // Overwrite the library that includes getSponsors function
   const originalNicoadsModule = libraryFunctions[nicoadsModuleIndex];
 
   libraryFunctions[nicoadsModuleIndex] = function (e, t, n) {
@@ -29,18 +30,15 @@ function init() {
       e.exports
     ).find((propertyName) => {
       return (
-        e.exports[propertyName].Client.prototype &&
-        typeof e.exports[propertyName].Client.prototype.getNicoads ===
-          "function"
+        e.exports[propertyName].prototype &&
+        typeof e.exports[propertyName].prototype.getSponsors === "function"
       );
     });
     const originalGetNicoadsFunction =
-      e.exports[getNicoadsBlockPropertyName].Client.prototype.getNicoads;
+      e.exports[getNicoadsBlockPropertyName].prototype.getSponsors;
 
     // Overwrite getNicoads function
-    e.exports[
-      getNicoadsBlockPropertyName
-    ].Client.prototype.getNicoads = function () {
+    e.exports[getNicoadsBlockPropertyName].prototype.getSponsors = function () {
       return originalGetNicoadsFunction
         .call(this, ...arguments)
         .then((nicoads) => {
@@ -49,7 +47,7 @@ function init() {
             try {
               overwriteCmtGraph({ isNicoads: true });
             } catch (err) {
-              console.error("[ERROR] Failed to do custom getNicoads", err);
+              console.error("[ERROR] Failed to do custom getSponsors", err);
             }
           }
           // Return original Promise

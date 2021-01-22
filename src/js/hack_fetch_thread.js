@@ -13,11 +13,13 @@ try {
 }
 
 function init() {
-  const libraryFunctions = window["webpackJsonp"][0][1];
-  const commentClientFunctionIndex = libraryFunctions.findIndex((item) => {
-    // Now, fetchThread is the library to fetch comments
-    return item && !!item.toString().match(/\.fetchThread\s?=\s?function/);
-  });
+  const libraryFunctions = window["webpackChunkwatch"][0][1];
+  const commentClientFunctionIndex = Object.keys(libraryFunctions).find(
+    (index) => {
+      const func = libraryFunctions[index];
+      return func && !!func.toString().match(/\.fetchThread\s?=\s?function/);
+    }
+  );
 
   // Overwrite fetch comment library
   const originalCommentClientFunction =
