@@ -4,22 +4,28 @@ Released under the MIT license
 https://github.com/noradium/dac/blob/master/src/scripts/index.js
 */
 
-const hackLibScript = createScript(chrome.extension.getURL("js/hack_lib.js"));
-hackLibScript.onload = function() {
+(async () => {
+  await inject(chrome.extension.getURL("js/hack_lib.js"));
+  // Get watch app URI just before inject in case of the late loading by another extensions
   const watchAppJsURI = getWatchAppJsURI();
-  const watchAppScript = createScript(
-    `${watchAppJsURI}${watchAppJsURI.indexOf("?") === -1 ? "?" : "&"}by-nicograph`
+  await inject(
+    `${watchAppJsURI}${
+      watchAppJsURI.indexOf("?") === -1 ? "?" : "&"
+    }by-nicograph`
   );
-  document.body.appendChild(watchAppScript);
-}
-document.body.appendChild(hackLibScript);
+})();
 
+async function inject(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.setAttribute("type", "text/javascript");
+    s.setAttribute("src", src);
+    s.onload = () => {
+      resolve();
+    };
 
-function createScript(src) {
-  const s = document.createElement("script");
-  s.setAttribute("type", "text/javascript");
-  s.setAttribute("src", src);
-  return s;
+    document.body.appendChild(s);
+  });
 }
 
 function getWatchAppJsURI() {
