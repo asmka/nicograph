@@ -4,18 +4,22 @@ Released under the MIT license
 https://github.com/noradium/dac/blob/master/src/scripts/index.js
 */
 
-inject(chrome.extension.getURL("js/hack_lib.js"));
-const watchAppJsURI = getWatchAppJsURI();
-inject(
-  `${watchAppJsURI}${watchAppJsURI.indexOf("?") === -1 ? "?" : "&"}by-nicograph`
-);
+const hackLibScript = createScript(chrome.extension.getURL("js/hack_lib.js"));
+hackLibScript.onload = function() {
+  const watchAppJsURI = getWatchAppJsURI();
+  const watchAppScript = createScript(
+    `${watchAppJsURI}${watchAppJsURI.indexOf("?") === -1 ? "?" : "&"}by-nicograph`
+  );
+  document.body.appendChild(watchAppScript);
+}
+document.body.appendChild(hackLibScript);
 
-function inject(src) {
+
+function createScript(src) {
   const s = document.createElement("script");
   s.setAttribute("type", "text/javascript");
   s.setAttribute("src", src);
-
-  document.body.appendChild(s);
+  return s;
 }
 
 function getWatchAppJsURI() {
