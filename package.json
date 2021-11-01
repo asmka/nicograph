@@ -4,10 +4,10 @@
   "description": "ニコニコ動画のシークバー上に区間コメント数のグラフを描画するChrome拡張機能",
   "private": true,
   "scripts": {
-    "prebuild": "rimraf release",
-    "build": "webpack -o release/js",
-    "postbuild": "ncp images/icons release/icons && ncp manifest.json release/manifest.json",
-    "clean": "rimraf release"
+    "clean": "rimraf release release.zip",
+    "prebuild": "npm run clean",
+    "build": "webpack -o release/js && ncp images/icons release/icons && ncp manifest.json release/manifest.json",
+    "postbuild": "zip -r release.zip release"
   },
   "repository": {
     "type": "git",
