@@ -14,13 +14,13 @@
   "content_scripts": [
     {
       "matches": ["*://www.nicovideo.jp/watch/*"],
-      "js": ["js/index.js"]
+      "js": ["index.js"]
     }
   ],
   "background": {
-    "scripts": ["js/background.js"]
+    "scripts": ["background.js"]
   },
-  "web_accessible_resources": ["js/hack_lib.js"],
+  "web_accessible_resources": ["hack_lib.js"],
   "page_action": {
     "default_popup": "",
     "default_icon": {}
