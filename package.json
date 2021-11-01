@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "prebuild": "rimraf release",
-    "build": "webpack -o release",
+    "build": "webpack -o release/js",
     "postbuild": "ncp images/icons release/icons && ncp manifest.json release/manifest.json",
     "clean": "rimraf release"
   },
