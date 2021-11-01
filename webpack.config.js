@@ -1,13 +1,16 @@
+const path = require('path');
+
 module.exports = {
   entry: {
-    index: "./src/js/index.js",
-    //hack_fetch_thread: './src/js/hack_fetch_thread.js',
-    //hack_get_nicoads: './src/js/hack_get_nicoads.js',
-    hack_lib: ["./src/js/hack_fetch_thread.js", "./src/js/hack_get_nicoads.js"],
-    background: "./src/js/background.js",
+    index: "./src/index.js",
+    //hack_fetch_thread: './src/hack_fetch_thread.js',
+    //hack_get_nicoads: './src/hack_get_nicoads.js',
+    hack_lib: ["./src/hack_fetch_thread.js", "./src/hack_get_nicoads.js"],
+    background: "./src/background.js",
   },
   output: {
     filename: "[name].js",
+    path: path.resolve(__dirname, 'release'),
   },
   /*
     optimization: {
