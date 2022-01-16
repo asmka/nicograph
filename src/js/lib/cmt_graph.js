@@ -43,17 +43,13 @@ function aggrCmtCnts(vposMsList, movieTimeMs, isNicoads, divNum) {
 }
 
 function drawGraph(drawTgt, cmtCnts) {
-  // Draw destination
-  let drawTgtRect = drawTgt.getBoundingClientRect();
-  let maxCnt = 0;
-
   // Sum all comments
+  let maxCnt = 1;
   for (let i = 0; i < cmtCnts.length; i++) {
     if (cmtCnts[i] > maxCnt) {
       maxCnt = cmtCnts[i];
     }
   }
-  if (maxCnt == 0) maxCnt = 1;
 
   // Insert a graph element
   const graphId = "CmtGraph";
@@ -64,33 +60,37 @@ function drawGraph(drawTgt, cmtCnts) {
   }
   graphElem = document.createElement("div");
   graphElem.id = graphId;
-  graphElem.style.display = "flex";
-  graphElem.style["flex-direction"] = "row";
+
+  // Set graph area
+  const graphWidth = drawTgt.getBoundingClientRect().width;
+  const graphHeight = 18;
+  const graphFixTop = 4;
+  graphElem.style.position = "relative";
+  graphElem.style.top = graphFixTop + "px";
+  graphElem.style.lineHeight = graphHeight + "px";
   drawTgt.insertBefore(graphElem, drawTgt.firstChild);
 
   // Create comment rectangles
-  let baseWidth = drawTgtRect.width / cmtCnts.length;
-  let baseHeight = drawTgtRect.height - 4; // Stick out over video if not minus 4
-  let frag = document.createDocumentFragment();
+  const barWidth = graphWidth / cmtCnts.length;
+  const maxBarHeight = graphHeight;
   for (let i = 0; i < cmtCnts.length; i++) {
     // Create a rectangle element
-    let e = document.createElement("div");
+    const e = document.createElement("div");
     e.className = "CmtRect";
     e.style.backgroundColor = "#66CCFF";
     e.style.opacity = 0.5;
-    e.style.position = "relative";
+    e.style.display = "inline-block";
+    e.style["vertical-align"] = "bottom";
 
     // Calc rectangle
-    let eWidth = baseWidth;
-    let eHeight = baseHeight * (cmtCnts[i] / maxCnt);
+    const eWidth = barWidth;
+    const eHeight = Math.floor(maxBarHeight * (cmtCnts[i] / maxCnt));
     e.style.width = eWidth + "px";
     e.style.height = eHeight + "px";
-    e.style.top = baseHeight - eHeight + 4 + "px";
 
     // Add element
-    frag.appendChild(e);
+    graphElem.appendChild(e);
   }
-  graphElem.appendChild(frag);
 }
 
 function createResizeObserverToRedraw(drawTgt) {

@@ -39,19 +39,18 @@ function init() {
     const originalFetchThread =
       e.exports[fetchThreadBlockPropertyName].prototype.fetchThread;
 
-    e.exports[
-      fetchThreadBlockPropertyName
-    ].prototype.fetchThread = function () {
-      return originalFetchThread.call(this, ...arguments).then((threads) => {
-        // Add custom processing
-        try {
-          createCmtGraph(threads);
-        } catch (err) {
-          console.error("[ERROR] Failed to do custom fetchThread", err);
-        }
-        // Return original Promise
-        return threads;
-      });
-    };
+    e.exports[fetchThreadBlockPropertyName].prototype.fetchThread =
+      function () {
+        return originalFetchThread.call(this, ...arguments).then((threads) => {
+          // Add custom processing
+          try {
+            createCmtGraph(threads);
+          } catch (err) {
+            console.error("[ERROR] Failed to do custom fetchThread", err);
+          }
+          // Return original Promise
+          return threads;
+        });
+      };
   };
 }
