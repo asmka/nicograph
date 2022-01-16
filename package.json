@@ -1,6 +1,6 @@
 {
   "name": "nicograph",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "ニコニコ動画のシークバー上に区間コメント数のグラフを描画するChrome拡張機能",
   "private": true,
   "scripts": {
@@ -19,12 +19,12 @@
     "node": "16.13.0"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
+    "eslint": "^8.7.0",
     "eslint-plugin-html": "^6.2.0",
     "ncp": "^2.0.0",
-    "prettier": "^2.4.1",
+    "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
-    "webpack": "^5.61.0",
+    "webpack": "^5.66.0",
     "webpack-cli": "^4.9.1"
   }
 }
