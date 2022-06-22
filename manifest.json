@@ -7,21 +7,20 @@
     "tabs",
     "webRequest",
     "webRequestBlocking",
-    "*://nicovideo.cdn.nimg.jp/web/scripts/pages/watch/watch_app_*.js",
     "*://www.nicovideo.jp/watch/*"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "content_scripts": [
     {
       "matches": ["*://www.nicovideo.jp/watch/*"],
-      "js": ["js/index.js"],
+      "js": ["loader.js"],
       "run_at": "document_end"
     }
   ],
   "background": {
     "scripts": []
   },
-  "web_accessible_resources": [],
+  "web_accessible_resources": ["script.js"],
   "page_action": {
     "default_popup": "",
     "default_icon": {}

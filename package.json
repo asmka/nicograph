@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf dist release release.zip",
     "prebuild": "npm run clean",
-    "build": "tsc && webpack -o release/js && ncp images/icons release/icons && ncp manifest.json release/manifest.json",
+    "build": "tsc && webpack -o release/ && ncp images/icons release/icons && ncp manifest.json release/manifest.json",
     "postbuild": "zip -r release.zip release"
   },
   "repository": {
