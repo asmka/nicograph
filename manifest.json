@@ -1,26 +1,26 @@
 {
   "manifest_version": 2,
   "name": "Niconico Comment Grapher",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "ニコニコ動画のシークバー上に区間コメント数のグラフを描画します",
   "permissions": [
     "tabs",
     "webRequest",
     "webRequestBlocking",
-    "*://nicovideo.cdn.nimg.jp/web/scripts/pages/watch/watch_app_*.js",
     "*://www.nicovideo.jp/watch/*"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "content_scripts": [
     {
       "matches": ["*://www.nicovideo.jp/watch/*"],
-      "js": ["js/index.js"]
+      "js": ["loader.js"],
+      "run_at": "document_end"
     }
   ],
   "background": {
-    "scripts": ["js/background.js"]
+    "scripts": []
   },
-  "web_accessible_resources": ["js/hack_lib.js"],
+  "web_accessible_resources": ["script.js"],
   "page_action": {
     "default_popup": "",
     "default_icon": {}
