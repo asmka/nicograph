@@ -65,7 +65,10 @@ function getCommentCounts(threads: Thread[], isNicoad: boolean): number[] {
   commentCounts.fill(0);
   for (const t of threads) {
     for (const c of t.comments) {
-      const p = Math.floor((c.vposMs * DIVISION) / totalTimeMs);
+      const p = Math.min(
+        Math.floor((c.vposMs * DIVISION) / totalTimeMs),
+        DIVISION - 1
+      );
       commentCounts[p]++;
     }
   }
