@@ -1,6 +1,6 @@
 {
   "name": "nicograph",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "ニコニコ動画のシークバー上に区間コメント数のグラフを描画するChrome拡張機能",
   "private": true,
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dff9th/nicograph.git"
+    "url": "git+https://github.com/asmka/nicograph.git"
   },
   "author": "asmka",
   "license": "MIT",
