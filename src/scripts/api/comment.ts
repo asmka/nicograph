@@ -1,7 +1,31 @@
-type ForkType = "owner" | "main" | "easy";
+export type ForkType = "owner" | "main" | "easy";
 
-interface GlobalComment {
-  id: number;
+export interface GlobalComment {
+  id: string;
+  count: number;
+}
+
+export interface Thread {
+  id: string;
+  fork: ForkType;
+  commentCount: number;
+  comments: Comment[];
+}
+
+export interface Comment {
+  body: string;
+  commands: string[];
+  id: string;
+  isMyPost: boolean;
+  isPremium: boolean;
+  nicoruCount: number;
+  nicoruId: string;
+  no: number;
+  postedAt: string; // data-time
+  score: number;
+  source: string; // "nicoru", "leaf", "trank"
+  userId: string;
+  vposMs: number;
 }
 
 export interface FetchCommentsRequest {
@@ -21,9 +45,10 @@ export interface FetchCommentsRequest {
 export interface FetchCommentsResponse {
   meta: {
     status: number;
-    data: {
-      globalComments: GlobalComment[];
-    };
+  };
+  data: {
+    globalComments: GlobalComment[];
+    threads: Thread[];
   };
 }
 
