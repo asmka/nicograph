@@ -9,37 +9,44 @@ import { CommentGraph } from "./scripts/graph";
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "movie_loaded") {
-    drawGraph(request.url);
+    (async () => {
+      drawGraph(request.url);
+    })();
   }
 });
 
 let graph: CommentGraph;
 
-function drawGraph(url: string) {
-  const matched = url.match(/sm[0-9]+/);
+async function drawGraph(url: string) {
+  const matched = url.match(/https:\/\/www.nicovideo.jp\/watch\/([a-z0-9]+)/);
   if (matched === null) {
     throw Error("url is not valid nicovideo url");
   }
-  const videoId = matched[0];
+  const videoId = matched[1];
 
-  Promise.all([getComments(videoId), getNicoads(videoId)]).then((values) => {
-    const commentsResponse = values[0];
-    const nicoadResponse = values[1];
+  const videoInfo = await getVideoInfo(videoId);
+  Promise.all([getComments(videoInfo), getNicoads(videoInfo)]).then(
+    (values) => {
+      const commentsResponse = values[0];
+      const nicoadResponse = values[1];
 
-    const threads = commentsResponse.data.threads;
-    const isNicoad = nicoadResponse.data.activePoint > 0;
-    const target = document.getElementsByClassName("XSlider")[0] as HTMLElement;
+      const threads = commentsResponse.data.threads;
+      const isNicoad = nicoadResponse.data.activePoint > 0;
+      const target = document.getElementsByClassName(
+        "XSlider"
+      )[0] as HTMLElement;
 
-    if (graph) {
-      graph.elem.remove();
+      if (graph) {
+        graph.elem.remove();
+      }
+      graph = new CommentGraph(threads, isNicoad, target);
+      target.insertBefore(graph.elem, target.firstChild);
     }
-    graph = new CommentGraph(threads, isNicoad, target);
-    target.insertBefore(graph.elem, target.firstChild);
-  });
+  );
 }
 
-async function getComments(videoId: string): Promise<FetchCommentsResponse> {
-  const videoInfoResponse = await fetchVideoInfo(videoId)
+async function getVideoInfo(videoId: string): Promise<FetchVideoInfoResponse> {
+  return fetchVideoInfo(videoId)
     .then((response) => {
       return response.json();
     })
@@ -47,8 +54,12 @@ async function getComments(videoId: string): Promise<FetchCommentsResponse> {
       const responseData: FetchVideoInfoResponse = data;
       return responseData;
     });
+}
 
-  return fetchComments(videoInfoResponse)
+async function getComments(
+  videoInfo: FetchVideoInfoResponse
+): Promise<FetchCommentsResponse> {
+  return fetchComments(videoInfo)
     .then((response) => {
       return response.json();
     })
@@ -58,8 +69,10 @@ async function getComments(videoId: string): Promise<FetchCommentsResponse> {
     });
 }
 
-async function getNicoads(videoId: string): Promise<FetchNicoadResponse> {
-  return fetchNicoad(videoId)
+async function getNicoads(
+  videoInfo: FetchVideoInfoResponse
+): Promise<FetchNicoadResponse> {
+  return fetchNicoad(videoInfo.data.client.watchId)
     .then((response) => {
       return response.json();
     })
