@@ -19,8 +19,9 @@ export interface FetchNicoadResponse {
   };
 }
 
-export function fetchNicoad(videoId: string) {
-  const uri = `https://api.nicoad.nicovideo.jp/v1/contents/video/${videoId}`;
+// 公式動画の場合、watchIdは'so***'に変換したもの
+export function fetchNicoad(watchId: string) {
+  const uri = `https://api.nicoad.nicovideo.jp/v1/contents/video/${watchId}`;
   const options = {
     method: "GET",
   };
