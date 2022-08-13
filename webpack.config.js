@@ -1,8 +1,8 @@
 module.exports = {
   mode: "production",
   entry: {
-    loader: "./dist/loader.js",
-    script: "./dist/scripts/main.js",
+    content_script: "./dist/content_script.js",
+    background: "./dist/background.js",
   },
   output: {
     filename: "[name].js",

@@ -2,7 +2,7 @@ import { Thread } from "./api/comment";
 
 const DIVISION = 100;
 const NICOAD_TIME_MS = 10 * 1000;
-const GRAPH_ELEMENT_ID = "nicograph_element";
+const GRAPH_ELEMENT_ID = "NicoGraph";
 
 export class CommentGraph {
   private readonly target: HTMLElement;
@@ -46,6 +46,7 @@ export class CommentGraph {
     }
 
     this.setResizeObserver(target);
+    target.insertBefore(elem, target.firstChild);
 
     this.target = target;
     this.elem = elem;
