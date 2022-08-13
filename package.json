@@ -16,7 +16,7 @@
   "author": "asmka",
   "license": "MIT",
   "volta": {
-    "node": "16.15.1"
+    "node": "16.16.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.193",
