@@ -28,6 +28,27 @@ export interface Comment {
   vposMs: number;
 }
 
+export interface FetchVideoInfoResponse {
+  meta: {
+    status: number;
+  };
+  data: {
+    comment: {
+      nvComment: {
+        threadKey: string;
+        server: string;
+        params: {
+          targets: Array<{
+            id: string;
+            fork: ForkType;
+          }>;
+          language: string;
+        };
+      };
+    };
+  };
+}
+
 export interface FetchCommentsRequest {
   params: {
     targets: Array<{
@@ -52,14 +73,32 @@ export interface FetchCommentsResponse {
   };
 }
 
-export function fetchComments() {
-  const apiData = parseApiData();
-  const nvComment = apiData.comment.nvComment;
+export async function fetchVideoInfo(videoId: string): Promise<Response> {
+  const actionTrackId =
+    Math.floor(Math.random() * (10 ** 12 - 10 ** 11) + 10 ** 11).toString() +
+    "_" +
+    Math.floor(Math.random() * (10 ** 14 - 10 ** 13) + 10 ** 13).toString();
 
+  // Ex. https://www.nicovideo.jp/api/watch/v3/sm32616754?actionTrackId=524752859435_76330043291330
+  const uri = `https://www.nicovideo.jp/api/watch/v3/${videoId}?actionTrackId=${actionTrackId}`;
+  const options = {
+    method: "POST",
+    headers: new Headers({
+      "X-Frontend-Id": "6",
+      "X-Frontend-Version": "0",
+    }),
+  };
+
+  return fetch(uri, options);
+}
+
+export async function fetchComments(
+  videoInfo: FetchVideoInfoResponse
+): Promise<Response> {
   const uri = "https://nvcomment.nicovideo.jp/v1/threads";
   const body: FetchCommentsRequest = {
-    params: nvComment.params,
-    threadKey: nvComment.threadKey,
+    params: videoInfo.data.comment.nvComment.params,
+    threadKey: videoInfo.data.comment.nvComment.threadKey,
     additionals: {},
   };
   const options = {
