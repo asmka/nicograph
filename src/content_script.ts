@@ -8,10 +8,8 @@ import { fetchNicoad, FetchNicoadResponse } from "./scripts/api/nicoad";
 import { CommentGraph } from "./scripts/graph";
 
 chrome.runtime.onMessage.addListener((request) => {
-  if (request.message === "movie_loaded") {
-    (async () => {
-      drawGraph(request.url);
-    })();
+  if (request.message === "video_loaded") {
+    drawGraph(request.url);
   }
 });
 
