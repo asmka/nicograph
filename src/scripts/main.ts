@@ -1,6 +1,6 @@
 import { fetchComments, FetchCommentsResponse } from "./api/comment";
 import { fetchNicoad, FetchNicoadResponse } from "./api/nicoad";
-import { drawGraph } from "./graph";
+import { CommentGraph } from "./graph";
 
 main();
 
@@ -28,6 +28,8 @@ function main() {
 
     const threads = commentsResponse.data.threads;
     const isNicoad = nicoadResponse.data.activePoint > 0;
-    drawGraph(threads, isNicoad);
+    const target = document.getElementsByClassName("XSlider")[0] as HTMLElement;
+    const graph = new CommentGraph(threads, isNicoad, target);
+    target.insertBefore(graph.elem, target.firstChild);
   });
 }
