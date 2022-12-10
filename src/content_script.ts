@@ -7,9 +7,14 @@ import {
 import { fetchNicoad, FetchNicoadResponse } from "./scripts/api/nicoad";
 import { CommentGraph } from "./scripts/graph";
 
-chrome.runtime.onMessage.addListener((request) => {
-  if (request.message === "video_loaded") {
-    drawGraph(request.url);
+chrome.runtime.onMessage.addListener(async (request) => {
+  switch (request.message) {
+    case "updateCompleted":
+    case "activated":
+      await drawGraph(request.url);
+      return;
+    default:
+      return;
   }
 });
 
