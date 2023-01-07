@@ -1,4 +1,4 @@
-import { Thread } from "./api/comment";
+import { Thread } from "./api/thread";
 
 const DIVISION = 100;
 const NICOAD_TIME_MS = 10 * 1000;
@@ -8,8 +8,8 @@ export class CommentGraph {
   private readonly target: HTMLElement;
   readonly elem: HTMLElement;
 
-  constructor(threads: Thread[], isNicoad: boolean, target: HTMLElement) {
-    const counts = this.getCommentCounts(threads, isNicoad);
+  constructor(threads: Thread[], hasNicoad: boolean, target: HTMLElement) {
+    const counts = this.getCommentCounts(threads, hasNicoad);
 
     // Set graph area
     const graphWidth = target.getBoundingClientRect().width;
@@ -70,9 +70,9 @@ export class CommentGraph {
     }
   }
 
-  private getCommentCounts(threads: Thread[], isNicoad: boolean): number[] {
+  private getCommentCounts(threads: Thread[], hasNicoad: boolean): number[] {
     const movieTimeMs = this.getMovieTimeMs();
-    const totalTimeMs = movieTimeMs + (isNicoad ? NICOAD_TIME_MS : 0);
+    const totalTimeMs = movieTimeMs + (hasNicoad ? NICOAD_TIME_MS : 0);
 
     const commentCounts = new Array<number>(DIVISION);
     commentCounts.fill(0);
