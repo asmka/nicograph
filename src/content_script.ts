@@ -1,17 +1,12 @@
-import {
-  fetchVideoInfo,
-  fetchComments,
-  FetchVideoInfoResponse,
-  FetchCommentsResponse,
-} from "./scripts/api/comment";
-import { fetchNicoad, FetchNicoadResponse } from "./scripts/api/nicoad";
+import { fetchThreads, Thread, NVComment } from "./scripts/api/thread";
+import { fetchNicoad } from "./scripts/api/nicoad";
 import { CommentGraph } from "./scripts/graph";
 
 chrome.runtime.onMessage.addListener(async (request) => {
   switch (request.message) {
     case "updateCompleted":
     case "activated":
-      await drawGraph(request.url);
+      await drawGraph();
       return;
     default:
       return;
@@ -20,67 +15,37 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
 let graph: CommentGraph;
 
-async function drawGraph(url: string) {
-  const matched = url.match(/https:\/\/www.nicovideo.jp\/watch\/([a-z0-9]+)/);
-  if (matched === null) {
-    throw Error("url is not valid nicovideo url");
-  }
-  const videoId = matched[1];
+async function drawGraph() {
+  Promise.all([getThreads(), hasNicoad()]).then(([threads, hasNicoad]) => {
+    const target = document.getElementsByClassName("XSlider")[0] as HTMLElement;
 
-  const videoInfo = await getVideoInfo(videoId);
-  Promise.all([getComments(videoInfo), getNicoads(videoInfo)]).then(
-    (values) => {
-      const commentsResponse = values[0];
-      const nicoadResponse = values[1];
-
-      const threads = commentsResponse.data.threads;
-      const isNicoad = nicoadResponse.data.activePoint > 0;
-      const target = document.getElementsByClassName(
-        "XSlider"
-      )[0] as HTMLElement;
-
-      if (graph) {
-        graph.elem.remove();
-      }
-      graph = new CommentGraph(threads, isNicoad, target);
-      target.insertBefore(graph.elem, target.firstChild);
+    if (graph) {
+      graph.elem.remove();
     }
-  );
+    graph = new CommentGraph(threads, hasNicoad, target);
+    target.insertBefore(graph.elem, target.firstChild);
+  });
 }
 
-async function getVideoInfo(videoId: string): Promise<FetchVideoInfoResponse> {
-  return fetchVideoInfo(videoId)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      const responseData: FetchVideoInfoResponse = data;
-      return responseData;
-    });
+async function getThreads(): Promise<Thread[]> {
+  const nvComment: NVComment = parseApiData().comment.nvComment;
+  const threads = (await fetchThreads(nvComment)).data.threads;
+  return threads;
 }
 
-async function getComments(
-  videoInfo: FetchVideoInfoResponse
-): Promise<FetchCommentsResponse> {
-  return fetchComments(videoInfo)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      const responseData: FetchCommentsResponse = data;
-      return responseData;
-    });
+async function hasNicoad(): Promise<boolean> {
+  const watchId: string = parseApiData().client.watchId;
+  return await fetchNicoad(watchId)
+    .then((response) => response.data.activePoint > 0)
 }
 
-async function getNicoads(
-  videoInfo: FetchVideoInfoResponse
-): Promise<FetchNicoadResponse> {
-  return fetchNicoad(videoInfo.data.client.watchId)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      const responseData: FetchNicoadResponse = data;
-      return responseData;
-    });
+function parseApiData() {
+  const apiDataValue = document
+    .getElementById("js-initial-watch-data")
+    ?.getAttribute("data-api-data");
+  if (apiDataValue === undefined || apiDataValue === null) {
+    throw new Error('"data-api-data" is not exist.');
+  }
+
+  return JSON.parse(apiDataValue);
 }
