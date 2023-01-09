@@ -20,13 +20,11 @@ export interface FetchNicoadResponse {
 }
 
 // 公式動画の場合、watchIdは'so***'に変換したもの
-export async function fetchNicoad(
-  watchId: string
-): Promise<FetchNicoadResponse> {
+export function fetchNicoad(watchId: string) {
   const uri = `https://api.nicoad.nicovideo.jp/v1/contents/video/${watchId}`;
   const options = {
     method: "GET",
   };
 
-  return fetch(uri, options).then((response) => response.json());
+  return fetch(uri, options);
 }
