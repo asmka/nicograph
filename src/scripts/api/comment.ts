@@ -105,7 +105,7 @@ export async function fetchVideoInfo(videoId: string): Promise<Response> {
 export async function fetchComments(
   videoInfo: FetchVideoInfoResponse
 ): Promise<Response> {
-  const uri = "https://nvcomment.nicovideo.jp/v1/threads";
+  const uri = 'https://nv-comment.nicovideo.jp/v1/threads';
   const body: FetchCommentsRequest = {
     params: videoInfo.data.comment.nvComment.params,
     threadKey: videoInfo.data.comment.nvComment.threadKey,
